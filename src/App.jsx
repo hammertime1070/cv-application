@@ -1,34 +1,35 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import PersonalDetails from './components/personal-info/PersonalDetails'
+import Buttons from './components/Button'
+import EducationSection from './components/education/EducationSection'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [personalDetails, setPersonalDetails] = useState({ fullName: '', email: '', phoneNumber: '', address: '' })
+  const [educationList, setEducationList] = useState([{ schoolName: '', degree: '', date: '' },])
+
+  function handleEducationChange(event, id) {
+    const { name, value } = event.target;
+    setEducationList(educationList.map((entry, index) => 
+      index === id ? { ...entry, [name]: value } : entry
+    ));
+  }
+
+  function addEducation() {
+    setEducationList((prevList) => [...prevList, { schoolName: '', degree: '', date: '' },])
+  }
+
+  function handleChange(event) {
+    const {id, value} = event.target
+    setPersonalDetails(prevDetails => ({...prevDetails, [id]: value,}))
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="App">
+      <PersonalDetails onChange={handleChange} {...personalDetails} />
+      <EducationSection educationList={educationList} onEducationChange={handleEducationChange} onAddEducation={addEducation} />
+      <Buttons cancel={() => console.log("Cancel")} save={() => console.log("Save")} remove={() => console.log("Remove")}/>
+    </div>
   )
 }
 
